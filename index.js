@@ -116,19 +116,28 @@ function addRole() {
   ])
   }
 }
-
 function addEmployee() {
-  const addEmployee = () => {
-    inquirer.prompt([
-      {
-        type: 'input',
-        name: 'userchoice',
-        message: "What employee would you like to add?",
-        choices: 
-        ["Please "]
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'name',
+      message: "What is the name of the employee you would like to add?",
+      validate: function (input) {
+        return !!(input) || "Please enter the name of the employee.";
+      }
     }
   ])
-  }
+  .then((response) => {
+    const newEmployee = response.name;
+    db.query("INSERT INTO employee (name) VALUES (?)", [newEmployee], (error, results) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('Your new employee has been added successfully.');
+        initialize();
+      }
+    });
+  });
 }
 
 function updateEmployeeRole() {
