@@ -57,88 +57,85 @@ function initialize () {
 }
 
 function viewDepartments() {
- db.query ('SELECT * FROM department', (err, rows) => {
-  if (err) {
-    console.log(err);
-  }
-  // console.log(rows);
- inquirer 
- .prompt(([
-    {
-    type: 'list',
-    name: 'departmentChoices',
-    message: "What would you like to choose?",
-    choices: 
-    ["Sales", "Engineering", "Finance", "Legal"]
-    }
-  ]))
-  .then ((data) => {
-    // console.log(data)
- })
-})}
+ db.promise().query ('SELECT * FROM department')
+  
+ .then (([data]) => {
+  console.log("\n")
+  console.table(data)
+})
+.then (initialize ())
+}
+
  
 function viewRoles() {
-  db.query ('SELECT * FROM role', (err, rows) => {
-    if (err) {
-      console.log(err);
-    }
-    console.log(rows);
-   inquirer 
-   .prompt(([
-      {
-      type: 'list',
-      name: 'roleChoices',
-      message: "What would you like to choose?",
-      choices: 
-      ["job title", "role id", "the department id", "the salary"]
-      }
-    ]))
-    .then ((data) => {
-      console.log(data)
-   })
+  db.promise().query ('SELECT * FROM role')
+  
+  .then (([data]) => {
+    console.log("\n")
+    console.table(data)
   })
-}
-// employee ids, first names, last names, job titles, departments, salaries, and managers
-function viewEmployees() {
-  db.query ('SELECT * FROM employee', (err, rows) => {
-    if (err) {
-      console.log(err);
-    }
-    console.log(rows);
-   inquirer 
-   .prompt(([
-      {
-      type: 'list',
-      name: 'employeeChoices',
-      message: "What would you like to choose?",
-      choices: 
-      ["employee id", "first name", "last name", "job titles", "the salary"]
-      }
-    ]))
-    .then ((data) => {
-      console.log(data)
-   })
+  .then (initialize ())
+  }
+  
+  
+  function viewEmployees() {
+  db.query ('SELECT * FROM employee')
+   
+  .then (([data]) => {
+    console.log("\n")
+    console.table(data)
   })
-}
+  .then (initialize ())
+  }
 
 function addDepartment() {
   
+  const addDepartment = () => {
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'userchoice',
+        message: "What department would you like to add?",
+        choices: 
+        ["Please "]
+    }
+  ])
+  }
 }
 
 function addRole() {
- 
+  const addRole = () => {
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'userchoice',
+        message: "What role would you like to add?",
+        choices: 
+        ["Please "]
+    }
+  ])
+  }
 }
 
 function addEmployee() {
- 
+  const addEmployee = () => {
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'userchoice',
+        message: "What employee would you like to add?",
+        choices: 
+        ["Please "]
+    }
+  ])
+  }
 }
 
 function updateEmployeeRole() {
-  // code to update an employee role
+  
 }
 
 initialize();
 
 
 
-// THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
