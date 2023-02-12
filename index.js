@@ -4,29 +4,29 @@ const mysql = require('mysql2');
 
 // Connect to database
 const db = mysql.createConnection(
-    {
-      host: 'localhost',
-      // MySQL username,
-      user: 'root',
-      password: 'Tacomacc253@',
-      database: 'employee_db'
-    },
-    console.log(`Connected to the employee_db database.`)
-  );
-  
+  {
+    host: 'localhost',
+    // MySQL username,
+    user: 'root',
+    password: 'Tacomacc253@',
+    database: 'employee_db'
+  },
+  console.log(`Connected to the employee_db database.`)
+);
 
-function initialize () {
-  inquirer 
+
+function initialize() {
+  inquirer
     .prompt([
       {
-      type: 'list',
-      name: 'userchoice',
-      message: "What would you like to do?",
-      choices: 
-      ["view all departments", "view all roles","view all employees", "add a department", "add a role", " add an employee", "update an employee role"]
+        type: 'list',
+        name: 'userchoice',
+        message: "What would you like to do?",
+        choices:
+          ["view all departments", "view all roles", "view all employees", "add a department", "add a role", " add an employee", "update an employee role"]
       }
     ])
-    .then ((data) => {
+    .then((data) => {
       console.log(data)
       switch (data.userchoice) {
         case "view all departments":
@@ -57,51 +57,61 @@ function initialize () {
 }
 
 function viewDepartments() {
- db.promise().query ('SELECT * FROM department')
-  
- .then (([data]) => {
-  console.log("\n")
-  console.table(data)
-})
-.then (initialize ())
+  db.promise().query('SELECT * FROM department')
+
+    .then(([data]) => {
+      console.log("\n")
+      console.table(data)
+    })
+    .then(initialize())
 }
 
- 
+
 function viewRoles() {
-  db.promise().query ('SELECT * FROM role')
-  
-  .then (([data]) => {
-    console.log("\n")
-    console.table(data)
-  })
-  .then (initialize ())
-  }
-  
-  
-  function viewEmployees() {
-    db.promise().query ('SELECT * FROM employee')
-   
-  .then (([data]) => {
-    console.log("\n")
-    console.table(data)
-  })
-  .then (initialize ())
-  }
+  db.promise().query('SELECT * FROM role')
+
+    .then(([data]) => {
+      console.log("\n")
+      console.table(data)
+    })
+    .then(initialize())
+}
+
+
+function viewEmployees() {
+  db.promise().query('SELECT * FROM employee')
+
+    .then(([data]) => {
+      console.log("\n")
+      console.table(data)
+    })
+    .then(initialize())
+}
 
 function addDepartment() {
-  
-  const addDepartment = () => {
-    inquirer.prompt([
-      {
-        type: 'input',
-        name: 'department',
-        message: "Which department you would like to add?",
-        validate: function (input) {
-          return !!(input) || "Please enter the department.";
-        }
+
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'department_name',
+      message: "What is the name of department you would like to add?",
+      validate: function (input) {
+        return !!(input) || "Please enter the name of department";
       }
-    ])
-  }
+    },
+
+  ])
+    .then((response) => {
+      const newDepartment = response.department_name;
+      db.query("INSERT INTO department (name) VALUES (?)", [newDepartment], (error, results) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log('Your new department has been added successfully.');
+          initialize();
+        }
+      });
+    });
 }
 //WHEN I choose to add a role
 //THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
@@ -132,19 +142,19 @@ function addRole() {
       }
     }
   ])
-  .then((response) => {
-    const newRoleTitle = response.title;
-    const newRoleSalary = response.salary;
-    const newRoleDepartmentId = response.department_id;
-    db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [newRoleTitle, newRoleSalary, newRoleDepartmentId], (error, results) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log('Your new role has been added successfully.');
-        initialize();
-      }
+    .then((response) => {
+      const newRoleTitle = response.title;
+      const newRoleSalary = response.salary;
+      const newRoleDepartmentId = response.department_id;
+      db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [newRoleTitle, newRoleSalary, newRoleDepartmentId], (error, results) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log('Your new role has been added successfully.');
+          initialize();
+        }
+      });
     });
-  });
 }
 // WHEN I choose to add an employee
 // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
@@ -181,34 +191,70 @@ function addEmployee() {
       default: null
     }
   ])
-  .then((response) => {
-    const newFirstName = response.first_name;
-    const newLastName = response.last_name;
-    const newRoleId = response.role_id;
-    const newManagerId = response.manager_id || null;
-    db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [newFirstName, newLastName, newRoleId, newManagerId ], (error, results) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log('Your new employee has been added successfully.');
-        initialize();
-      }
+    .then((response) => {
+      const newFirstName = response.first_name;
+      const newLastName = response.last_name;
+      const newRoleId = response.role_id;
+      const newManagerId = response.manager_id || null;
+      db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [newFirstName, newLastName, newRoleId, newManagerId], (error, results) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log('Your new employee has been added successfully.');
+          initialize();
+        }
+      });
     });
+}
+//WHEN I choose to update an employee role
+//THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+
+function updateEmployeeRole() {
+ 
+      db.query("SELECT first_name, last_name FROM employee", (error, results) => {
+        if (error) {
+          console.error(error);
+        } else {
+          const employee = results.map(result => result.first_name + " " + result.last_name + " ");
+          db.query("SELECT title FROM role", (error, results) => {
+            if (error) {
+              console.error(error);
+            } else {
+              const role = results.map(result => result.title);
+          inquirer.prompt([
+            {
+              type: 'list',
+              name: 'update',
+              message: "Which employee would you like to update?",
+              choices: employee
+            },
+            {
+              type: 'list',
+              name: 'role',
+              message: 'Which role do you want to assign with the selected employee?',
+              choices: role
+            }
+          ])
+            .then((response) => {
+              const updatedEmployee = response.update;
+              const newRole = response.role;
+              const [firstName, lastName] = updatedEmployee.split(' ');
+              db.query("UPDATE employee SET role = ? WHERE first_name = ? AND last_name = ?", [newRole, firstName, lastName], (error, results) => {
+                if (error) {
+                  console.error(error);
+                } else {
+                  console.log('Your new employee has been updated successfully.');
+                  initialize();
+                }
+              });
+            });
+        }
+      });
+    }
   });
 }
 
-function updateEmployeeRole() {
-  inquirer.prompt([
-    {
-      type: 'input',
-      name: 'update',
-      message: "What is the name of the employee you would like to update?",
-      validate: function (input) {
-        return !!(input) || "Please enter the name of the employee you want to update.";
-      }
-    }
-  ])
-}
+
 
 initialize();
 
