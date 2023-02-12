@@ -94,28 +94,58 @@ function addDepartment() {
     inquirer.prompt([
       {
         type: 'input',
-        name: 'userchoice',
-        message: "What department would you like to add?",
-        choices: 
-        ["Please "]
-    }
-  ])
+        name: 'department',
+        message: "Which department you would like to add?",
+        validate: function (input) {
+          return !!(input) || "Please enter the department.";
+        }
+      }
+    ])
   }
 }
 
 function addRole() {
-  const addRole = () => {
-    inquirer.prompt([
-      {
-        type: 'input',
-        name: 'userchoice',
-        message: "What role would you like to add?",
-        choices: 
-        ["Please "]
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: "What is the title of the role you would like to add?",
+      validate: function (input) {
+        return !!(input) || "Please enter the title.";
+      }
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: "What is the salary of the role you would like to add?",
+      validate: function (input) {
+        return !!(input) || "Please enter the salary.";
+      }
+    },
+    {
+      type: 'input',
+      name: 'department_id',
+      message: "What is the department ID of the role you would like to add?",
+      validate: function (input) {
+        return !!(input) || "Please enter the department ID.";
+      }
     }
   ])
-  }
+  .then((response) => {
+    const newRoleTitle = response.title;
+    const newRoleSalary = response.salary;
+    const newRoleDepartmentId = response.department_id;
+    db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [newRoleTitle, newRoleSalary, newRoleDepartmentId], (error, results) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('Your new role has been added successfully.');
+        initialize();
+      }
+    });
+  });
 }
+
 function addEmployee() {
   inquirer.prompt([
     {
@@ -129,7 +159,7 @@ function addEmployee() {
   ])
   .then((response) => {
     const newEmployee = response.name;
-    db.query("INSERT INTO employee (name) VALUES (?)", [newEmployee], (error, results) => {
+    db.query("INSERT INTO employee (first_name, last_name) VALUES (?)", [newEmployee], (error, results) => {
       if (error) {
         console.error(error);
       } else {
@@ -141,7 +171,16 @@ function addEmployee() {
 }
 
 function updateEmployeeRole() {
-  
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'update',
+      message: "What is the name of the employee you would like to update?",
+      validate: function (input) {
+        return !!(input) || "Please enter the name of the employee you want to update.";
+      }
+    }
+  ])
 }
 
 initialize();
