@@ -23,7 +23,7 @@ function initialize() {
         name: 'userchoice',
         message: "What would you like to do?",
         choices:
-          ["view all departments", "view all roles", "view all employees", "add a department", "add a role", " add an employee", "update an employee role"]
+          ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role"]
       }
     ])
     .then((data) => {
@@ -66,16 +66,23 @@ function viewDepartments() {
     .then(initialize())
 }
 
-
 function viewRoles() {
-  db.promise().query('SELECT * FROM role')
-
+  db.promise().query(`
+    SELECT role.id, role.title, department.name AS department, role.salary
+    FROM role
+    LEFT JOIN department ON role.department_id = department.id;
+  `)
     .then(([data]) => {
-      console.log("\n")
-      console.table(data)
+      console.log("\n");
+      console.table(data);
+      initialize();
     })
-    .then(initialize())
+    .catch((error) => {
+      console.log(error);
+      initialize();
+    });
 }
+
 
 
 function viewEmployees() {
