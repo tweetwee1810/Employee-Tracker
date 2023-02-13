@@ -79,14 +79,23 @@ function viewRoles() {
 
 
 function viewEmployees() {
-  db.promise().query('SELECT * FROM employee')
-
+  db.promise().query(`
+    SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+    FROM employee
+    LEFT JOIN role ON employee.role_id = role.id
+    LEFT JOIN department ON role.department_id = department.id
+    LEFT JOIN employee manager ON employee.manager_id = manager.id;
+  `)
     .then(([data]) => {
-      console.log("\n")
-      console.table(data)
+      console.log("\n");
+      console.table(data);
     })
-    .then(initialize())
+    .catch((error) => {
+      console.log(error);
+      initialize();
+    });
 }
+
 
 function addDepartment() {
 
@@ -206,8 +215,7 @@ function addEmployee() {
       });
     });
 }
-//WHEN I choose to update an employee role
-//THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+
 
 function updateEmployeeRole() {
  
