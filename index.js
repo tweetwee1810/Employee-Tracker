@@ -222,52 +222,102 @@ function addEmployee() {
       });
     });
 }
-
-
 function updateEmployeeRole() {
- 
-      db.query("SELECT first_name, last_name FROM employee", (error, results) => {
-        if (error) {
-          console.error(error);
-        } else {
-          const employee = results.map(result => result.first_name + " " + result.last_name + " ");
-          db.query("SELECT title FROM role", (error, results) => {
-            if (error) {
-              console.error(error);
-            } else {
-              const role = results.map(result => result.title);
-          inquirer.prompt([
-            {
-              type: 'list',
-              name: 'update',
-              message: "Which employee would you like to update?",
-              choices: employee
-            },
-            {
-              type: 'list',
-              name: 'role',
-              message: 'Which role do you want to assign with the selected employee?',
-              choices: role
-            }
-          ])
-            .then((response) => {
-              const updatedEmployee = response.update;
-              const newRole = response.role;
-              const [firstName, lastName] = updatedEmployee.split(' ');
-              db.query("UPDATE employee SET role = ? WHERE first_name = ? AND last_name = ?", [newRole, firstName, lastName], (error, results) => {
-                if (error) {
-                  console.error(error);
-                } else {
-                  console.log('Your new employee has been updated successfully.');
-                  initialize();
-                }
-              });
-            });
+  db.promise().query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee;')
+    .then(([data]) => {
+      const employees = data.map(({ id, name }) => ({ name, value: id }));
+
+      return inquirer.prompt([
+        {
+          type: 'list',
+          name: 'employeeId',
+          message: 'Which employee do you want to update?',
+          choices: employees
+        },
+        {
+          type: 'list',
+          name: 'roleId',
+          message: 'What is the employee\'s new role?',
+          choices: ['Manager', 'Engineer', 'Salesperson', 'Other']
         }
-      });
-    }
-  });
+      ]);
+    })
+    .then(({ employeeId, roleId }) => {
+      let roleIdValue = null;
+
+      switch (roleId) {
+        case 'Manager':
+          roleIdValue = 1;
+          break;
+        case 'Engineer':
+          roleIdValue = 2;
+          break;
+        case 'Salesperson':
+          roleIdValue = 3;
+          break;
+        case 'Other':
+          roleIdValue = 4;
+          break;
+        default:
+          break;
+      }
+
+      return db.promise().query('UPDATE employee SET role_id = ? WHERE id = ?', [roleIdValue, employeeId]);
+    })
+    .then(() => {
+      console.log('Employee role updated!');
+      initialize();
+    })
+    .catch((error) => {
+      console.log(error);
+      initialize();
+    });
 }
+
+// function updateEmployeeRole() {
+ 
+//       db.query("SELECT first_name, last_name FROM employee", (error, results) => {
+//         if (error) {
+//           console.error(error);
+//         } else {
+//           const employee = results.map(result => result.first_name + " " + result.last_name + " ");
+//           db.query("SELECT title FROM role", (error, results) => {
+//             if (error) {
+//               console.error(error);
+//             } else {
+//               const role = results.map(result => result.title);
+//           inquirer.prompt([
+//             {
+//               type: 'list',
+//               name: 'update',
+//               message: "Which employee would you like to update?",
+//               choices: employee
+//             },
+//             {
+//               type: 'list',
+//               name: 'role',
+//               message: 'Which role do you want to assign with the selected employee?',
+//               choices: role
+//             }
+//           ])
+//             .then((response) => {
+//               const updatedEmployee = response.update;
+//               const newRole = response.role;
+//               const [firstName, lastName] = updatedEmployee.split(' ');
+//               db.query("UPDATE employee SET role = ? WHERE first_name = ? AND last_name = ?", [newRole, firstName, lastName], (error, results) => {
+//                 if (error) {
+//                   console.error(error);
+//                 } else {
+//                   console.log('Your new employee has been updated successfully.');
+//                   initialize();
+//                 }
+//               });
+//             });
+//         }
+//       });
+//     }
+//   });
+// }
 
 
 
