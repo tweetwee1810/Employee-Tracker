@@ -1,14 +1,28 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+var figlet = require('figlet');
 
-
+figlet.text('Employee Tracker', {
+  font: 'caligraphy',
+  horizontalLayout: 'default',
+  verticalLayout: 'default',
+  width: 160,
+  whitespaceBreak: true
+}, function(err, data) {
+  if (err) {
+      console.log('Something went wrong...');
+      console.dir(err);
+      return;
+  }
+  console.log(data);
+});
 // Connect to database
 const db = mysql.createConnection(
   {
     host: 'localhost',
     // MySQL username,
     user: 'root',
-    password: '',
+    password: 'Tacomacc253@',
     database: 'employee_db'
   },
   console.log(`Connected to the employee_db database.`)
@@ -23,7 +37,7 @@ function initialize() {
         name: 'userchoice',
         message: "What would you like to do?",
         choices:
-          ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role"]
+          ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role", "\n"]
       }
     ])
     .then((data) => {

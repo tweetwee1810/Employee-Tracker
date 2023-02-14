@@ -21,6 +21,9 @@ Employee Tracker is a software application that helps organizations keep track o
 
 ## License 
 N/A
+
+## Credits 
+N/A
 ## Questions 
 
 If you have any question, contact me:
