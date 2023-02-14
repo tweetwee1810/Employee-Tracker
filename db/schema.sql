@@ -33,5 +33,4 @@ FOREIGN KEY (manager_id)
 REFERENCES employee(id)
 ON DELETE SET NULL);
 
-ALTER TABLE employee
-ADD COLUMN role VARCHAR(255);
+
