@@ -3,10 +3,11 @@ const mysql = require('mysql2');
 var figlet = require('figlet');
 
 figlet.text('Employee Tracker', {
-  font: 'caligraphy',
+  font: 'doom',
   horizontalLayout: 'default',
   verticalLayout: 'default',
-  width: 160,
+  width: 100,
+  height: 50,
   whitespaceBreak: true
 }, function(err, data) {
   if (err) {
@@ -16,7 +17,7 @@ figlet.text('Employee Tracker', {
   }
   console.log(data);
 });
-// Connect to database
+//Connect to database
 const db = mysql.createConnection(
   {
     host: 'localhost',
@@ -150,42 +151,55 @@ function addRole() {
     {
       type: 'input',
       name: 'title',
-      message: "What is the title of the role you would like to add?",
+      message: "Enter the name of the new role:",
       validate: function (input) {
-        return !!(input) || "Please enter the title.";
+        return input.trim() !== "" || "Please enter a role name.";
       }
     },
     {
-      type: 'input',
+      type: 'number',
       name: 'salary',
-      message: "What is the salary of the role you would like to add?",
+      message: "Enter the salary for the new role:",
       validate: function (input) {
-        return !!(input) || "Please enter the salary.";
+        return input >= 0 || "Please enter a valid salary.";
       }
     },
     {
       type: 'input',
-      name: 'department_id',
-      message: "What is the department ID of the role you would like to add?",
+      name: 'department',
+      message: "Enter the name of the department for the new role:",
       validate: function (input) {
-        return !!(input) || "Please enter the department ID.";
+        return input.trim() !== "" || "Please enter a department name.";
       }
     }
   ])
-    .then((response) => {
-      const newRoleTitle = response.title;
-      const newRoleSalary = response.salary;
-      const newRoleDepartmentId = response.department_id;
-      db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [newRoleTitle, newRoleSalary, newRoleDepartmentId], (error, results) => {
-        if (error) {
-          console.error(error);
-        } else {
-          console.log('Your new role has been added successfully.');
-          initialize();
-        }
-      });
+  .then((response) => {
+    const newRoleTitle = response.title;
+    const newRoleSalary = response.salary;
+    const newRoleDepartment = response.department;
+
+    db.query("SELECT id FROM department WHERE name = ?", [newRoleDepartment], (error, results) => {
+      if (error) {
+        console.error(error);
+      } else if (results.length === 0) {
+        console.log(`No department found with name "${newRoleDepartment}".`);
+        initialize();
+      } else {
+        const departmentId = results[0].id;
+        db.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [newRoleTitle, newRoleSalary, departmentId], (error, results) => {
+          if (error) {
+            console.error(error);
+          } else {
+            console.log(`New role "${newRoleTitle}" added successfully to department "${newRoleDepartment}".`);
+            initialize();
+          }
+        });
+      }
     });
+  });
 }
+
+
 // WHEN I choose to add an employee
 // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 function addEmployee() {

@@ -18,7 +18,9 @@ Employee Tracker is a software application that helps organizations keep track o
 - Select from "view all department", "view all roles", "view all employees" to views the tables.
 - Select from "add a department", "add a role", "add an employee", answer the prompted questions to add new data to the existed database. 
 - Select "update an employee" to update and change their new role. 
+Here is video demo: 
 
+[Video Demo - Click here](https://drive.google.com/file/d/1eFPXNnJeuaGFI8___frmORZ4Z0BI_6n0/view)
 ## License 
 N/A
 
