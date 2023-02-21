@@ -59,7 +59,7 @@ function initialize() {
         case "add a role":
           addRole();
           break;
-        case " add an employee":
+        case "add an employee":
           addEmployee();
           break;
         case "update an employee role":
@@ -199,9 +199,56 @@ function addRole() {
   });
 }
 
+// function addEmployee() {
+//   inquirer.prompt([
+//     {
+//       type: 'input',
+//       name: 'first_name',
+//       message: "What is the employee's first name",
+//       validate: function (input) {
+//         return !!(input) || "Please enter the first name";
+//       }
+//     },
+//     {
+//       type: 'input',
+//       name: 'last_name',
+//       message: "What is the employee's last name",
+//       validate: function (input) {
+//         return !!(input) || "Please enter the last name.";
+//       }
+//     },
+//     {
+//       type: 'input',
+//       name: 'role_id',
+//       message: "What is the role_id belong to the employee?",
+//       validate: function (input) {
+//         return !!(input) || "Please enter the employee's role_id";
+//       }
+//     },
+//     {
+//       type: 'input',
+//       name: 'manager_id',
+//       message: "What is the manager_id belong to the employee? Press Enter to leave it blank",
+//       default: null
+//     }
+//   ])
+//     .then((response) => {
+//       const newFirstName = response.first_name;
+//       const newLastName = response.last_name;
+//       const newRoleId = response.role_id;
+//       const newManagerId = response.manager_id || null;
+//       db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [newFirstName, newLastName, newRoleId, newManagerId], (error, results) => {
+//         if (error) {
+//           console.error(error);
+//         } else {
+//           console.log('Your new employee has been added successfully.');
+//           initialize();
+//         }
+//       });
+//     });
+// }
 
-// WHEN I choose to add an employee
-// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
+
 function addEmployee() {
   inquirer.prompt([
     {
@@ -232,14 +279,20 @@ function addEmployee() {
       type: 'input',
       name: 'manager_id',
       message: "What is the manager_id belong to the employee? Press Enter to leave it blank",
-      default: null
+      filter: function (input) {
+        if (input === "") {
+          return null;
+        } else {
+          return input;
+        }
+      }
     }
   ])
     .then((response) => {
       const newFirstName = response.first_name;
       const newLastName = response.last_name;
       const newRoleId = response.role_id;
-      const newManagerId = response.manager_id || null;
+      const newManagerId = response.manager_id;
       db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [newFirstName, newLastName, newRoleId, newManagerId], (error, results) => {
         if (error) {
           console.error(error);
@@ -250,6 +303,7 @@ function addEmployee() {
       });
     });
 }
+
 
 
 
