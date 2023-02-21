@@ -98,8 +98,6 @@ function viewRoles() {
     });
 }
 
-
-
 function viewEmployees() {
   db.promise().query(`
     SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
@@ -111,6 +109,7 @@ function viewEmployees() {
     .then(([data]) => {
       console.log("\n");
       console.table(data);
+      initialize();
     })
     .catch((error) => {
       console.log(error);
@@ -198,56 +197,6 @@ function addRole() {
     });
   });
 }
-
-// function addEmployee() {
-//   inquirer.prompt([
-//     {
-//       type: 'input',
-//       name: 'first_name',
-//       message: "What is the employee's first name",
-//       validate: function (input) {
-//         return !!(input) || "Please enter the first name";
-//       }
-//     },
-//     {
-//       type: 'input',
-//       name: 'last_name',
-//       message: "What is the employee's last name",
-//       validate: function (input) {
-//         return !!(input) || "Please enter the last name.";
-//       }
-//     },
-//     {
-//       type: 'input',
-//       name: 'role_id',
-//       message: "What is the role_id belong to the employee?",
-//       validate: function (input) {
-//         return !!(input) || "Please enter the employee's role_id";
-//       }
-//     },
-//     {
-//       type: 'input',
-//       name: 'manager_id',
-//       message: "What is the manager_id belong to the employee? Press Enter to leave it blank",
-//       default: null
-//     }
-//   ])
-//     .then((response) => {
-//       const newFirstName = response.first_name;
-//       const newLastName = response.last_name;
-//       const newRoleId = response.role_id;
-//       const newManagerId = response.manager_id || null;
-//       db.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [newFirstName, newLastName, newRoleId, newManagerId], (error, results) => {
-//         if (error) {
-//           console.error(error);
-//         } else {
-//           console.log('Your new employee has been added successfully.');
-//           initialize();
-//         }
-//       });
-//     });
-// }
-
 
 function addEmployee() {
   inquirer.prompt([
