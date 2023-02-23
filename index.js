@@ -74,11 +74,15 @@ function initialize() {
 function viewDepartments() {
   db.promise().query('SELECT * FROM department')
 
-    .then(([data]) => {
-      console.log("\n")
-      console.table(data)
-    })
-    .then(initialize())
+  .then(([data]) => {
+    console.log("\n");
+    console.table(data);
+    initialize();
+  })
+  .catch((error) => {
+    console.log(error);
+    initialize();
+  });
 }
 
 function viewRoles() {
