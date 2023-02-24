@@ -20,7 +20,7 @@ Employee Tracker is a software application that helps organizations keep track o
 - Select "update an employee" to update and change their new role. 
 Here is video demo: 
 
-[Video Demo - Click here](chrome-extension://mmeijimgabbpbgpdklnllpncmdofkcpn/app.html#/files/32d83a03-7a77-4eaf-y200-2bdc57621fc7)
+[Video Demo - Click here](https://drive.google.com/file/d/1H7LOipHM1OPohjlrTW6bIArfLIO482Cq/view)
 
 ## License 
 N/A
